@@ -1,0 +1,80 @@
+<sm:StateMachine xmlns:sm="http://www.stateforge.com/StateMachineJava-v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.stateforge.com/StateMachineJava-v1                                      http://www.stateforge.com/xsd/StateMachineJava-v1.xsd">
+    <!-- General settings -->
+    <settings asynchronous="false" namespace="com.jaeger.tugasakhir.Classification">
+        <object instance="action" class="ClassificationAction"/>
+    </settings>
+    <!-- Events -->
+    <events>
+        <eventSource name="Event">
+            <event id="evKeyword"/>
+            <event id="evClass"/>
+            <event id="evUnknown"/>
+            <event id="evBrackets"/>
+            <event id="evCurlyBrackets"/>
+            <event id="evSemicolon"/>
+            <event id="evExtends"/>
+            <event id="evImplements"/>
+            <event id="evEquals"/>
+            <event id="evNew"/>
+        </eventSource>
+    </events>
+    <!-- States -->
+    <state name="Classification">
+        <state name="Initial_State">
+            <onEntry action="action.doPrint(&quot;Initial State&quot;)"/>
+            <transition event="evKeyword" nextState="Keyword_State"/>
+            <transition event="evClass" nextState="Class_State"/>
+            <transition event="evExtends" nextState="Extends_State"/>
+            <transition event="evImplements" nextState="Implements_State"/>
+            <transition event="evUnknown" nextState="Name_Identifier_State"/>
+        </state>
+        <state name="Class_State">
+            <onEntry action="action.doPrint(&quot;Entering Class&quot;)"/>
+            <!--onEntry action="action.doPrint(&quot;HELLO&quot;)"-->
+            <!--onExit action="action.doPrint(&quot;BYE&quot;)"-->
+            <transition event="evUnknown" nextState="Name_Identifier_State"/>
+        </state>
+        <state name="Keyword_State">
+            <onEntry action="action.doPrint(&quot;Entering Keyword&quot;)"/>
+            <transition event="evClass" nextState="Class_State"/>
+            <transition event="evUnknown" nextState="Name_Identifier_State"/>
+            <transition event="evKeyword" nextState="Keyword_State"/>
+        </state>
+        <state name="Name_Identifier_State">
+            <onEntry action="action.doPrint(&quot;Entering Name Identifier&quot;)"/>
+            <transition event="evBrackets" nextState="Bracket_State"/>
+            <transition event="evCurlyBrackets" nextState="Final_State"/>
+            <transition event="evSemicolon" nextState="Final_State"/>
+            <transition event="evExtends" nextState="Extends_State"/>
+            <transition event="evImplements" nextState="Implements_State"/>
+            <transition event="evEquals" nextState="Equal_State"/>
+        </state>
+        <state name="Equal_State">
+            <onEntry action="action.doPrint(&quot;Entering Equal&quot;)"/>
+            <transition event="evUnknown" nextState="Name_Identifier_State"/>
+            <transition event="evNew" nextState="New_State"/>
+        </state>
+        <state name="Extends_State">
+            <onEntry action="action.doPrint(&quot;Entering Extends&quot;)"/>
+            <transition event="evUnknown" nextState="Name_Identifier_State"/>
+        </state>
+        <state name="Implements_State">
+            <onEntry action="action.doPrint(&quot;Entering Implements&quot;)"/>
+            <transition event="evUnknown" nextState="Name_Identifier_State"/>
+        </state>
+        <state name="New_State">
+            <onEntry action="action.doPrint(&quot;Entering New&quot;)"/>
+            <transition event="evUnknown" nextState="Name_Identifier_State"/>
+        </state>
+        <state name="Bracket_State">
+            <onEntry action="action.doPrint(&quot;Entering Bracket&quot;)"/>
+            <transition event="evUnknown" nextState="Bracket_State"/>
+            <transition event="evKeyword" nextState="Bracket_State"/>
+            <transition event="evCurlyBrackets" nextState="Final_State"/>
+            <transition event="evSemicolon" nextState="Final_State"/>
+        </state>
+        <state name="Final_State" kind="final">
+            <onEntry action="action.doPrint(&quot;Entering Final&quot;)"/>
+        </state>
+    </state>
+</sm:StateMachine>
